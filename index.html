@@ -1,40 +1,133 @@
 <!DOCTYPE html>
 <html>
- <head>
-     <script src=" https://unpkg.com/leaflet@1.6.0/dist/leaflet.js "></script>
-     <link rel="stylesheet" href=" https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
+<meta charset="utf-8" />
+<head>
+<link rel="stylesheet"
 
-    <style>
-	   #map {
-          width: 100%;
-          height: 580px;
-          box-shadow: 5px 5px 5px #888;
-             }
-    </style>
+href="https://unpkg.com/leaflet@1.6.0/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.6.0/dist/leaflet.js"></script>
 
- </head>
+<style>
+	#map {
+	width: 100%;
+	height: 600px;
+	box-shadow: 5px 5px 5px #888;
+			}
+</style>
 
- <body>
-    <div id = 'map'>     </div>
-	<script>
-	   	   
-	   var OSM=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution:
-      '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a>'
-      + 'contributors',
-       maxZoom: 18});
-	   
-	   var map = L.map('map', {
-       center: [1.614433, -75.609455],
-       zoom: 15,
-	   layers: OSM,
-       });
-	   
-	   L.control.scale().addTo(map);
-	   
-	   
-	   
-	</script>
- </body>
+</head>
+<body>
+<div id="map"></div>
+<script>
+
+var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a>'
+
++	'contributors', maxZoom: 18
+
+});
+
+var cities = L.tileLayer.wms("http://localhost:8080/geoserver/wms", { 
+layers: 'ciudades',
+format: 'image/png',
+transparent: true,
+tiled: true,
+attribution: "Natural Earth"
+
+});
+
+var hidro = L.tileLayer.wms("http://localhost:8080/geoserver/wms", { 
+layers: 'hidrografia',
+format: 'image/png',
+transparent: true,
+tiled: true,
+attribution: "Natural Earth"
+
+});
+
+var pais = L.tileLayer.wms("http://localhost:8080/geoserver/wms", { 
+layers: 'paises',
+format: 'image/png',
+transparent: true,
+tiled: true,
+attribution: "Natural Earth"
+
+});
 
 
+var map = L.map('map', {
+center: [1.614433, -75.609455],
+zoom: 13,
+layers: [osm,hidro,cities],
+
+scrollWheelZoom: false,
+});
+
+//------------------------------MARCADORES --------------------------------
+var markerUA = L.marker([1.620385, -75.604305],{
+draggable: false,
+title: 'pincha aquí'
+}).addTo(map)
+.bindPopup('Universidad de La Amazonia')
+.openPopup();
+
+var markerAL = L.marker([1.615030, -75.613918],{
+draggable: false,
+title: 'pincha aquí'
+}).addTo(map)
+.bindPopup('Alcaldia Municipal')
+.openPopup();
+
+var markerPL = L.marker([1.611827, -75.608597],{
+draggable: false,
+title: 'pincha aquí'
+}).addTo(map)
+.bindPopup('Estadio Municipal')
+.openPopup();
+
+
+//--------------------------------CAPAS VECTORIALES--------------------------------
+
+var circle = L.circle([1.615030, -75.613918], 500, {
+color: 'red',
+fillColor: '#f03',
+fillOpacity: 0.5
+}).addTo(map);
+
+//Añadir un polígono
+var polygon = L.polygon([
+[1.611499, -75.609207],
+[1.612427, -75.608721],
+[1.612501, -75.608606],
+[1.612542, -75.608479],
+[1.612540, -75.608328],
+[1.612513, -75.608218],
+[1.612453, -75.608119],
+[1.612351, -75.608031],
+[1.612249, -75.607972],
+[1.612011, -75.607959],
+[1.611207, -75.608434],
+[1.611156, -75.608551],
+[1.611108, -75.608783],
+[1.611404, -75.609193]
+
+]).addTo(map);
+//.bindPopup ('Mercaolid');
+
+//Añadir una línea
+var pointA = new L.LatLng(1.611943, -75.607769);
+var pointB = new L.LatLng(1.611711, -75.606988);
+var pointC = new L.LatLng(1.611510, -75.606201);
+var pointD = new L.LatLng(1.612179, -75.605895);
+var latlngs = [pointA, pointB,pointC, pointD];
+var polyline = L.polyline(
+latlngs, {color: 'red'}
+)
+.addTo(map)
+.bindPopup ('Avda. Juan Carlos I');
+
+
+L.control.scale().addTo(map);
+
+</script>
+</body>
 </html>
